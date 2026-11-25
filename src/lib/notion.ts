@@ -130,17 +130,17 @@ export const stripAt = (s?: string | null) =>
   s ? s.replace(/^@+/, "").trim() : s ?? "";
 
 const STATUS_EMOJI: Record<string, string> = {
-  ONLINE: "🟢",
-  OFFLINE: "🔴",
+  ONLINE: "✅",
+  OFFLINE: "❌",
   IZIN: "🟡",
   SAKIT: "🟠",
 };
 const STATUS_PROGRESS: Record<string, string> = {
-  "IN PROGRESS": "🟡",
-  SKETCH: "⚪",
-  BASE: "🟠",
-  REVISION: "🔴",
-  DONE: "🟢",
+  "IN PROGRESS": "⌛",
+  SKETCH: "✍️",
+  BASE: "🎨🖌️",
+  REVISION: "🔁",
+  DONE: "✅",
 };
 
 
