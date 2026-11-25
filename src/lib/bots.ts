@@ -32,7 +32,7 @@ export const BOTS: Record<string, BotConfig> = {
     template: [
       "<b>{Artist PIC}</b>",
       "",
-      "<b>{Order Name}</b> - {Order Status}",
+      "<b>{Order Name}</b> - {Order Status} {status_progress}",
       "{Progression %}",
     ].join("\n"),
     fields: [],
@@ -45,7 +45,7 @@ export const BOTS: Record<string, BotConfig> = {
     template: [
       "<b>{Artist PIC}</b>",
       "",
-      "<b>{Order Name}</b> - {Order Status}",
+      "<b>{Order Name}</b> - {Order Status} {status_progress}",
       "{Progression %}",
     ].join("\n"),
     fields: [],
@@ -58,7 +58,7 @@ export const BOTS: Record<string, BotConfig> = {
      template: [
       "<b>{Artist PIC}</b>",
       "",
-      "<b>{Order Name}</b> - {Order Status}",
+      "<b>{Order Name}</b> - {Order Status} {status_progress}",
       "{Progression %}",
     ].join("\n"),
     fields: [],
@@ -71,7 +71,7 @@ export const BOTS: Record<string, BotConfig> = {
      template: [
       "<b>{Artist PIC}</b>",
       "",
-      "<b>{Order Name}</b> - {Order Status}",
+      "<b>{Order Name}</b> - {Order Status} {status_progress}",
       "{Progression %}",
     ].join("\n"),
     fields: [],
