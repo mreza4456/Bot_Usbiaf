@@ -15,10 +15,9 @@ export const BOTS: Record<string, BotConfig> = {
     token: process.env.TELEGRAM_TOKEN_ATTENDANCE,
     chatId: process.env.TELEGRAM_CHAT_ID_ATTENDANCE,
     template: [
-      "🕘 <b>Attendance Report</b>",
+      "🕘 <b>Absen</b>",
       "",
-      "👤 <b>{Nama}</b>",
-      "<b>{Status}</b> {status_emoji}",
+      "<b>{Nama}</b>_<b>{Status}</b>{status_emoji}",
       "{Waktu Online}",
       "{Waktu Offline}",
       "",

@@ -159,6 +159,14 @@ export async function POST(
   const files: NotionFile[] = Object.values<any>(page.properties).flatMap(
     propToFiles
   );
+  console.log(
+  "TYPES:",
+  Object.entries<any>(page.properties)
+    .map(([k, v]) => `${k}=${v.type}`)
+    .join(" | ")
+);
+console.log("FILES:", JSON.stringify(files));
+
   const images = files.filter(isImage);
   const others = files.filter((f) => !isImage(f));
 
@@ -191,19 +199,20 @@ const message = bot.template
     ].join("\n");
   let ok = true;
 
-  if (images.length === 0) {
-    ok = await sendText(bot.token, bot.chatId, message);
-  } else {
-    // Caption dipakai kalau cukup pendek, kalau tidak teks dikirim terpisah
-    const useCaption = message.length <= CAPTION_LIMIT;
-    if (!useCaption) ok = await sendText(bot.token, bot.chatId, message);
-
-    const caption = useCaption ? message : undefined;
-    ok =
-      (images.length === 1
-        ? await sendFile(bot.token, bot.chatId, images[0], caption)
-        : await sendAlbum(bot.token, bot.chatId, images, caption)) && ok;
-  }
+if (images.length === 0) {
+  ok = await sendText(bot.token, bot.chatId, message);
+} else {
+  const useCaption = message.length <= CAPTION_LIMIT;
+  if (!useCaption) ok = await sendText(bot.token, bot.chatId, message);
+  const caption = useCaption ? message : undefined;
+  ok =
+    (images.length === 1
+      ? await sendFile(bot.token, bot.chatId, images[0], caption)
+      : await sendAlbum(bot.token, bot.chatId, images, caption)) && ok;
+}
+for (const f of others) {
+  ok = (await sendFile(bot.token, bot.chatId, f)) && ok;
+}
 
   // File non-gambar (pdf, dll) dikirim sebagai dokumen
   for (const f of others) {
