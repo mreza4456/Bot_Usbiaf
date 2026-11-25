@@ -135,20 +135,11 @@ const STATUS_EMOJI: Record<string, string> = {
   IZIN: "🟡",
   SAKIT: "🟠",
 };
-const STATUS_PROGRESS: Record<string, string> = {
-  "IN PROGRESS": "⌛",
-  SKETCH: "✍️",
-  BASE: "🎨🖌️",
-  REVISION: "🔁",
-  DONE: "✅",
-};
 
 
 export const statusEmoji = (s?: string) =>
   (s && STATUS_EMOJI[s.trim().toUpperCase()]) || "⚪";
 
-export const statusProgress = (s?: string) =>
-  (s && STATUS_PROGRESS[s.trim().toUpperCase()]) || "⚪";
 
 
 // 0.25 -> "25%", 0.5 -> "50%", 0.125 -> "12.5%", 1 -> "100%"

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BOTS } from "@/lib/bots";
-import { esc, propToText, propToFiles, isImage, renderTemplate, statusEmoji , stripAt, NotionFile, toPercent, statusProgress } from "@/lib/notion";
+import { esc, propToText, propToFiles, isImage, renderTemplate, statusEmoji , stripAt, NotionFile, toPercent, } from "@/lib/notion";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -187,22 +187,17 @@ values["status_emoji"] = statusEmoji(
   propToText(page.properties["Status"]) ?? undefined
 );
 
-values["status_progress"] = statusProgress(
-  propToText(page.properties["Status"]) ?? undefined
-);
 
 const progRaw = propToText(page.properties["Progression %"]);
-if (progRaw) {
-  const txt = progRaw.trim();
-  const isNum = /^-?\d*\.?\d+$/.test(txt);
+const txt = (progRaw ?? "").trim();
+const isNum = /^-?\d*\.?\d+$/.test(txt);
 
-  if (isNum) {
-    // Angka: 0 disembunyikan, selain itu diformat jadi persen
-    if (Number(txt) !== 0) values["Progression %"] = toPercent(txt);
-  } else if (!/^0+(\.0+)?\s*%$/.test(txt)) {
-    // Teks: "0%" / "0.0%" disembunyikan, selain itu ditampilkan apa adanya
-    values["Progression %"] = esc(txt);
-  }
+if (isNum && Number(txt) !== 0) {
+  values["Progression %"] = toPercent(txt);
+} else if (!isNum && txt && !/^0+(\.0+)?\s*%$/.test(txt)) {
+  values["Progression %"] = esc(txt);
+} else {
+  delete values["Progression %"]; // 0, "0%", atau kosong -> baris hilang
 }
 
 const message = bot.template
