@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BOTS } from "@/lib/bots";
-import { esc, propToText, propToFiles, isImage, renderTemplate, NotionFile } from "@/lib/notion";
+import { esc, propToText, propToFiles, isImage, renderTemplate, statusEmoji , stripAt, NotionFile } from "@/lib/notion";
+
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
@@ -151,6 +152,7 @@ export async function POST(
       const value = propToText(prop);
       if (value) details.push(`• <b>${esc(name)}</b>: ${esc(value)}`);
     }
+    
   }
 
   // Semua file dari properti bertipe "files"
@@ -170,6 +172,13 @@ for (const [name, prop] of Object.entries<any>(page.properties)) {
   const v = propToText(prop);
   if (v) values[name] = esc(v);
 }
+if (values["Nama"]) values["Nama"] = stripAt(values["Nama"]);
+values["title"] = stripAt(values["title"]);
+
+values["status_emoji"] = statusEmoji(
+  propToText(page.properties["Status"]) ?? undefined
+);
+
 
 const message = bot.template
   ? renderTemplate(bot.template, values)

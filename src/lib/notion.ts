@@ -15,9 +15,15 @@ export function propToText(p: any): string | null {
       return p.status?.name ?? null;
     case "multi_select":
       return p.multi_select.map((s: any) => s.name).join(", ") || null;
-    case "date":
+       case "date":
       if (!p.date) return null;
-      return p.date.end ? `${p.date.start} → ${p.date.end}` : p.date.start;
+      return p.date.end
+        ? `${fmtTime(p.date.start)} → ${fmtTime(p.date.end)}`
+        : fmtTime(p.date.start);
+    case "created_time":
+      return fmtTime(p.created_time);
+    case "last_edited_time":
+      return fmtTime(p.last_edited_time);
     case "checkbox":
       return p.checkbox ? "✅" : "❌";
     case "people":
@@ -70,4 +76,48 @@ export function renderTemplate(
       line.replace(/\{([^}]+)\}/g, (_, k) => values[k] || "-")
     )
     .join("\n");
+}
+
+
+const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const BULAN = [
+  "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+  "Jul", "Agu", "Sep", "Okt", "Nov", "Des",
+];
+
+// "2026-11-25T13:27:00.000+07:00" -> "Rabu, 25 Nov 2026 • 13:27"
+// "2026-11-25" (tanpa jam)        -> "Rabu, 25 Nov 2026"
+export function fmtTime(iso?: string | null) {
+  if (!iso) return null;
+
+  const hasTime = iso.includes("T");
+
+  // Tanggal tanpa jam: jangan dikonversi zona waktu supaya hari tidak bergeser
+  const d = hasTime ? new Date(iso) : new Date(`${iso}T00:00:00+07:00`);
+  if (isNaN(d.getTime())) return iso;
+
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    weekday: "short",
+  }).formatToParts(d);
+
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+
+  // Nama hari dihitung dari tanggal WIB
+  const wibDate = new Date(
+    Date.UTC(Number(get("year")), Number(get("month")) - 1, Number(get("day")))
+  );
+  const hari = HARI[wibDate.getUTCDay()];
+  const bulan = BULAN[Number(get("month")) - 1];
+
+  const tanggal = `${hari}, ${Number(get("day"))} ${bulan} ${get("year")}`;
+  const jam = `${get("hour").replace("24", "00")}:${get("minute")}`;
+
+  return hasTime ? `${tanggal} • ${jam}` : tanggal;
 }
