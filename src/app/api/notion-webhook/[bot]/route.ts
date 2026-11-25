@@ -118,7 +118,8 @@ export async function POST(
 
   let body: any;
   try {
-    body = await req.json();
+    body = await req.json(); 
+    console.log("PAYLOAD:", JSON.stringify(body).slice(0, 3500));
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
