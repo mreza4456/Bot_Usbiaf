@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BOTS } from "@/lib/bots";
-import { esc, propToText, propToFiles, isImage, renderTemplate, statusEmoji , stripAt, NotionFile } from "@/lib/notion";
+import { esc, propToText, propToFiles, isImage, renderTemplate, statusEmoji , stripAt, NotionFile, toPercent } from "@/lib/notion";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -186,6 +186,9 @@ values["title"] = stripAt(values["title"]);
 values["status_emoji"] = statusEmoji(
   propToText(page.properties["Status"]) ?? undefined
 );
+
+const progRaw = propToText(page.properties["Progression %"]);
+if (progRaw) values["Progression %"] = toPercent(progRaw);
 
 
 const message = bot.template

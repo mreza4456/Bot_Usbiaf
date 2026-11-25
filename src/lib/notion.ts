@@ -7,8 +7,11 @@ export function propToText(p: any): string | null {
       return p.title.map((t: any) => t.plain_text).join("") || null;
     case "rich_text":
       return p.rich_text.map((t: any) => t.plain_text).join("") || null;
-    case "number":
-      return p.number != null ? String(p.number) : null;
+      case "number": {
+      if (p.number == null) return null;
+      const isPercent = p.__name?.includes("%"); // tidak dipakai, lihat catatan
+      return String(p.number);
+    }
     case "select":
       return p.select?.name ?? null;
     case "status":
@@ -135,3 +138,13 @@ const STATUS_EMOJI: Record<string, string> = {
 
 export const statusEmoji = (s?: string) =>
   (s && STATUS_EMOJI[s.trim().toUpperCase()]) || "⚪";
+
+
+// 0.25 -> "25%", 0.5 -> "50%", 0.125 -> "12.5%", 1 -> "100%"
+export const toPercent = (v?: string | number | null) => {
+  if (v == null || v === "") return "";
+  const n = Number(v);
+  if (isNaN(n)) return String(v);
+  return `${Math.round(n * 10000) / 100}%`;
+};
+
