@@ -5,35 +5,43 @@ export type BotConfig = {
   emoji: string;
   token?: string;
   chatId?: string;
-  fields: Field[]; // properti Notion yang ditampilkan (kosong = tampilkan semua)
+  template?: string; // opsional
+  fields: Field[];
 };
-
 export const BOTS: Record<string, BotConfig> = {
   attendance: {
     name: "Attendance Report",
     emoji: "🕘",
     token: process.env.TELEGRAM_TOKEN_ATTENDANCE,
     chatId: process.env.TELEGRAM_CHAT_ID_ATTENDANCE,
-    fields: [
-      { prop: "Nama", label: "Nama" },
-      { prop: "Status", label: "Status" },
-      { prop: "Jam Masuk", label: "Jam Masuk" },
-      { prop: "Jam Pulang", label: "Jam Pulang" },
-      { prop: "Keterangan", label: "Keterangan" },
-    ],
+    template: [
+      "🕘 <b>Attendance Report</b>",
+      "",
+      "👤 <b>{Nama}</b>",
+      "Status: {Status}",
+      "Masuk: {Waktu Online}",
+      "Pulang: {Waktu Offline}",
+      "",
+    ].join("\n"),
+    fields: [],
   },
   design: {
     name: "Design Report",
     emoji: "🎨",
     token: process.env.TELEGRAM_TOKEN_DESIGN,
     chatId: process.env.TELEGRAM_CHAT_ID_DESIGN,
-    fields: [
-      { prop: "Designer", label: "Designer" },
-      { prop: "Project", label: "Project" },
-      { prop: "Status", label: "Status" },
-      { prop: "Deadline", label: "Deadline" },
-      { prop: "Link Figma", label: "Link Figma" },
-    ],
+    template: [
+      "🎨 <b>Design Report</b>",
+      "",
+      "<b>{title}</b>",
+      "Designer: {Designer}",
+      "Project: {Project}",
+      "Status: <b>{Status}</b>",
+      "Deadline: {Deadline}",
+      "",
+      '<a href="{url}">Buka di Notion</a>',
+    ].join("\n"),
+    fields: [],
   },
   animation: {
     name: "Animation Report",
@@ -75,3 +83,4 @@ export const BOTS: Record<string, BotConfig> = {
     ],
   },
 };
+

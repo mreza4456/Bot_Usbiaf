@@ -52,3 +52,22 @@ export function propToFiles(p: any): NotionFile[] {
 export const isImage = (f: NotionFile) =>
   /\.(jpe?g|png|webp)$/i.test(f.name) ||
   /\.(jpe?g|png|webp)(\?|$)/i.test(f.url.split("?")[0] + "?");
+
+
+  // Ganti {Nama Kolom} dengan nilainya.
+// Baris yang semua placeholder-nya kosong akan dihapus.
+export function renderTemplate(
+  template: string,
+  values: Record<string, string>
+) {
+  return template
+    .split("\n")
+    .filter((line) => {
+      const keys = [...line.matchAll(/\{([^}]+)\}/g)].map((m) => m[1]);
+      return keys.length === 0 || keys.some((k) => values[k]);
+    })
+    .map((line) =>
+      line.replace(/\{([^}]+)\}/g, (_, k) => values[k] || "-")
+    )
+    .join("\n");
+}

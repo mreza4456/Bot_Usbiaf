@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BOTS } from "@/lib/bots";
-import { esc, propToText, propToFiles, isImage, NotionFile } from "@/lib/notion";
-
+import { esc, propToText, propToFiles, isImage, renderTemplate, NotionFile } from "@/lib/notion";
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
@@ -160,14 +159,26 @@ export async function POST(
   const images = files.filter(isImage);
   const others = files.filter((f) => !isImage(f));
 
-  const message = [
-    `${bot.emoji} <b>${esc(bot.name)}</b>`,
-    `<b>${esc(title)}</b>`,
-    "",
-    ...details,
-    page.url ? `\n<a href="${page.url}">Buka di Notion</a>` : "",
-  ].join("\n");
+// Nilai yang bisa dipakai di template
+const values: Record<string, string> = {
+  title: esc(title),
+  url: page.url ?? "",
+  bot: esc(bot.name),
+};
+for (const [name, prop] of Object.entries<any>(page.properties)) {
+  const v = propToText(prop);
+  if (v) values[name] = esc(v);
+}
 
+const message = bot.template
+  ? renderTemplate(bot.template, values)
+  : [
+      `${bot.emoji} <b>${esc(bot.name)}</b>`,
+      `<b>${esc(title)}</b>`,
+      "",
+      ...details,
+      page.url ? `\n<a href="${page.url}">Buka di Notion</a>` : "",
+    ].join("\n");
   let ok = true;
 
   if (images.length === 0) {
