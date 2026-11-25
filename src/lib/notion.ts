@@ -121,3 +121,17 @@ export function fmtTime(iso?: string | null) {
 
   return hasTime ? `${tanggal} • ${jam}` : tanggal;
 }
+
+// "@MReza" -> "MReza"
+export const stripAt = (s?: string | null) =>
+  s ? s.replace(/^@+/, "").trim() : s ?? "";
+
+const STATUS_EMOJI: Record<string, string> = {
+  ONLINE: "🟢",
+  OFFLINE: "🔴",
+  IZIN: "🟡",
+  SAKIT: "🟠",
+};
+
+export const statusEmoji = (s?: string) =>
+  (s && STATUS_EMOJI[s.trim().toUpperCase()]) || "⚪";
