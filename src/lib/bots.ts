@@ -71,7 +71,7 @@ export const BOTS: Record<string, BotConfig> = {
      template: [
       "<b>{Artist PIC}</b>",
       "",
-      "<b>{Order Name}</b> - {Order Status}",
+     "<b>{Order Name}</b> - {Service Order} - {Order Status}",
       "Progress - {Progression %}",
     ].join("\n"),
     fields: [],
