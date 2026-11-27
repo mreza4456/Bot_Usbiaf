@@ -33,6 +33,17 @@ export function propToText(p: any): string | null {
       return p.people.map((u: any) => u.name ?? u.id).join(", ") || null;
     case "url":
     case "email":
+          case "rollup": {
+      const r = p.rollup;
+      if (!r) return null;
+      if (r.type === "number") return r.number != null ? String(r.number) : null;
+      if (r.type === "date") return fmtTime(r.date?.start);
+      if (r.type === "array") {
+        const items = (r.array ?? []).map((x: any) => propToText(x)).filter(Boolean);
+        return items.length ? items.join(", ") : null;
+      }
+      return null;
+    }
     case "phone_number":
       return p[p.type] ?? null;
     case "formula": {
